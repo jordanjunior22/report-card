@@ -100,6 +100,16 @@ export default function transformReportCardData(
     sequencePosition = sequenceData?.rank_in_class;
   }
 
+  let absencesCount = 0;
+
+  if (displayMode === 'annual') {
+    absencesCount = annual_summary.disciplinary_record.total_absences;
+  } else if (isSequenceMode) {
+    absencesCount = sequenceData?.disciplinary_record?.absences_count ?? 0;
+  } else {
+    // term modes
+    absencesCount = termSummary?.disciplinary_record?.absences_count ?? 0;
+  }
 
   // --- TERM AVERAGES (always from annual_summary) ---
   const firstTermAvg = annual_summary.term_averages.term_1;
@@ -144,7 +154,7 @@ export default function transformReportCardData(
     thirdTermAvg,
     classAverage,
     councilDecision,
-    absences: `${termSummary?.disciplinary_record?.absences_count || 0} days`,
+    absences: `${absencesCount} days`,
     lateness: 'N/A',
     behavior: termSummary?.disciplinary_record?.discipline_count > 0 ? 'Fair' : 'Good',
     disciplineRemarks: isSequenceMode ? generateSequenceRemarks(sequenceData.disciplinary_record) : generateAnnualRemarks(annual_summary.disciplinary_record),

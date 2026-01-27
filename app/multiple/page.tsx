@@ -2,22 +2,36 @@
 
 import React, { useState, useMemo } from "react";
 import { DisplayMode } from "@/components/reportcard/datatypes";
-import ReportCard from "@/components/reportcard/templates/ReportCart";
 import { transformMultipleReportCards } from "@/components/reportcard/transformMultipleReportCardData";
 import { mockAPIResponseMultiple } from "@/components/reportcard/mockAPIResponseMultiple";
 
+// Import all templates
+import ReportCartTemplateA from "@/components/reportcard/templates/ReportCartTemplateA";
+import ReportCartTemplateB from "@/components/reportcard/templates/ReportCartTemplateB";
+import ReportCartTemplateC from "@/components/reportcard/templates/ReportCartTemplateC";
+
+// Map template names to components
+const templates = {
+  TemplateA: ReportCartTemplateA,
+  TemplateB: ReportCartTemplateB,
+  TemplateC: ReportCartTemplateC,
+} as const; // 'as const' ensures keyof typeof templates is string literal types
+
+type TemplateKey = keyof typeof templates;
+
 // ===============================
-// PRINT FUNCTION (Multiple Students)
+// PRINT FUNCTION
 // ===============================
 const printReportCards = (cardIds: string[]) => {
   const printWindow = window.open("", "", "width=800,height=600");
   if (!printWindow) return;
 
-  let htmlContent = `
+  const htmlContent = `
     <!DOCTYPE html>
     <html>
       <head>
         <title>Report Cards</title>
+        <!-- Use compiled Tailwind CSS -->
         <script src="https://cdn.tailwindcss.com"></script>
         <style>
           @media print {
@@ -28,19 +42,13 @@ const printReportCards = (cardIds: string[]) => {
         </style>
       </head>
       <body>
-  `;
-
-  cardIds.forEach((id, index) => {
-    const card = document.getElementById(id);
-    if (card) {
-      htmlContent += card.outerHTML;
-      if (index < cardIds.length - 1) {
-        htmlContent += `<div class="page-break"></div>`;
-      }
-    }
-  });
-
-  htmlContent += `
+        ${cardIds
+          .map((id, idx) => {
+            const el = document.getElementById(id);
+            if (!el) return "";
+            return el.outerHTML + (idx < cardIds.length - 1 ? '<div class="page-break"></div>' : "");
+          })
+          .join("")}
       </body>
     </html>
   `;
@@ -54,38 +62,30 @@ const printReportCards = (cardIds: string[]) => {
 };
 
 // ===============================
-// MAIN PAGE (Multiple Students)
+// MAIN PAGE
 // ===============================
 export default function PrintMultipleReportCardsPage() {
   const [displayMode, setDisplayMode] = useState<DisplayMode>("annual");
+  const [templateName, setTemplateName] = useState<TemplateKey>("TemplateA");
 
-  // 🔁 Transform ALL students
   const reportCards = useMemo(
-    () =>
-      transformMultipleReportCards(
-        mockAPIResponseMultiple,
-        displayMode
-      ),
+    () => transformMultipleReportCards(mockAPIResponseMultiple, displayMode),
     [displayMode]
   );
 
-  const cardIds = reportCards.map(
-    (_, index) => `report-card-${index}`
-  );
+  const cardIds = reportCards.map((_, index) => `report-card-${index}`);
+  const SelectedTemplate = templates[templateName];
 
   return (
     <div className="min-h-screen bg-gray-100">
       {/* CONTROL PANEL */}
       <div className="fixed top-4 left-4 bg-white p-4 rounded-lg shadow-lg z-20 text-sm flex flex-col gap-2">
+        {/* Display Mode */}
         <div>
-          <label className="block font-semibold mb-2">
-            Display Mode:
-          </label>
+          <label className="block font-semibold mb-2">Display Mode:</label>
           <select
             value={displayMode}
-            onChange={(e) =>
-              setDisplayMode(e.target.value as DisplayMode)
-            }
+            onChange={(e) => setDisplayMode(e.target.value as DisplayMode)}
             className="border px-3 py-1 rounded"
           >
             <option value="annual">Annual</option>
@@ -101,6 +101,23 @@ export default function PrintMultipleReportCardsPage() {
           </select>
         </div>
 
+        {/* Template Selector */}
+        <div>
+          <label className="block font-semibold mb-2">Template:</label>
+          <select
+            value={templateName}
+            onChange={(e) => setTemplateName(e.target.value as TemplateKey)}
+            className="border px-3 py-1 rounded"
+          >
+            {Object.keys(templates).map((name) => (
+              <option key={name} value={name}>
+                {name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Print Button */}
         <button
           onClick={() => printReportCards(cardIds)}
           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 text-sm font-medium transition-colors"
@@ -112,7 +129,7 @@ export default function PrintMultipleReportCardsPage() {
       {/* REPORT CARDS */}
       <div className="flex flex-col items-center gap-8 py-8">
         {reportCards.map((props, index) => (
-          <ReportCard
+          <SelectedTemplate
             key={props.matricule ?? index}
             {...props}
             cardId={`report-card-${index}`}

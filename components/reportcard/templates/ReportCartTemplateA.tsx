@@ -3,7 +3,7 @@
 import React from "react";
 import { Subject, ReportCardProps } from "@/components/reportcard/datatypes";
 
-const ReportCard: React.FC<ReportCardProps> = ({
+const ReportCartTemplateA: React.FC<ReportCardProps> = ({
   schoolName,
   schoolLogo,
   schoolTel,
@@ -314,32 +314,52 @@ const ReportCard: React.FC<ReportCardProps> = ({
             </div>
 
             {/* Discipline Section */}
-            <table className="w-full border border-gray-400 text-[9px] border-collapse">
+            <table className="w-full border border-gray-400 text-[9px] border-collapse table-auto">
+              <colgroup>
+                <col className="w-auto" />
+                <col className="w-full" />
+              </colgroup>
+
               <thead>
                 <tr className="bg-gray-200">
-                  <th className="border px-1 text-[10px] font-semibold">Discipline</th>
+                  <th className="border px-1 text-[10px] font-semibold whitespace-nowrap">
+                    Discipline
+                  </th>
                   <th className="border px-1"></th>
                 </tr>
               </thead>
+
               <tbody>
                 <tr>
-                  <td className="border px-1 font-semibold">Absences</td>
+                  <td className="border px-1 font-semibold whitespace-nowrap">
+                    Absences
+                  </td>
                   <td className="border px-1 text-center">{absences ?? "-"}</td>
                 </tr>
+
                 <tr className="bg-gray-100">
-                  <td className="border px-1 font-semibold">Lateness</td>
+                  <td className="border px-1 font-semibold whitespace-nowrap">
+                    Lateness
+                  </td>
                   <td className="border px-1 text-center">{lateness ?? "-"}</td>
                 </tr>
+
                 <tr>
-                  <td className="border px-1 font-semibold">Behavior</td>
-                  <td className="border px-1 text-center">{behavior ?? "-"}</td>
+                  <td className="border px-1 font-semibold whitespace-nowrap">
+                    Behavior
+                  </td>
+                  <td className="border px-1 text-center"></td>
                 </tr>
+
                 <tr className="bg-gray-100">
-                  <td className="border px-1 font-semibold">Remarks</td>
-                  <td className="border px-1 text-center">{disciplineRemarks ?? "-"}</td>
+                  <td className="border px-1 font-semibold whitespace-nowrap">
+                    Remarks
+                  </td>
+                  <td className="border px-1 text-center"></td>
                 </tr>
               </tbody>
             </table>
+
           </div>
         </div>
 
@@ -364,4 +384,4 @@ const ReportCard: React.FC<ReportCardProps> = ({
   );
 };
 
-export default ReportCard;
+export default ReportCartTemplateA;

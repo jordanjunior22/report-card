@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import transformReportCardData from "@/components/reportcard/transformReportCardData";
 import { Subject, ReportCardProps, DisplayMode } from "@/components/reportcard/datatypes";
 import { mockAPIResponse } from "@/components/reportcard/mockAPResponse";
-import ReportCard from "@/components/reportcard/templates/ReportCart";
+import ReportCartTemplateA from "@/components/reportcard/templates/ReportCartTemplateA";
 
 // ===============================
 // PRINT FUNCTION (Single Student)
@@ -107,7 +107,7 @@ export default function App() {
 
       {/* REPORT CARD */}
       <div className="flex justify-center py-8">
-        <ReportCard {...reportCardProps} cardId="report-card" />
+        <ReportCartTemplateA {...reportCardProps} cardId="report-card" />
       </div>
     </div>
   );
