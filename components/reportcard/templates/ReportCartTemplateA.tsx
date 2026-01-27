@@ -278,7 +278,7 @@ const ReportCartTemplateA: React.FC<ReportCardProps> = ({
 
           <div className="grid grid-cols-2 gap-2">
             <div className="flex flex-col gap-1">
-              <div className="bg-gray-200 border-2 border-gray-400 rounded-lg p-2 text-center shadow-sm">
+              <div className="bg-gray-100 border-1 border-gray-200 rounded-sm p-2 text-center">
                 <p className="text-[10px] font-semibold">Average</p>
                 <p className="text-[16px] font-bold text-black mb-2">{getDisplayAverage()}</p>
                 <p className="text-[10px] font-semibold">Position</p>
