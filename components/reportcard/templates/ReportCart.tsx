@@ -20,6 +20,7 @@ const ReportCard: React.FC<ReportCardProps> = ({
   displayMode,
   annualAverage,
   position,
+  sequencePosition,
   firstTermAvg,
   secondTermAvg,
   thirdTermAvg,
@@ -68,6 +69,43 @@ const ReportCard: React.FC<ReportCardProps> = ({
     const avg = parseFloat(calculateSubjectAverage(subject));
     return isNaN(avg) ? "-" : (avg * subject.coefficient).toFixed(1);
   };
+  const getDisplayAverage = () => {
+    if (displayMode === "annual") return annualAverage ?? "-";
+    if (displayMode === "first-term") return firstTermAvg ?? "-";
+    if (displayMode === "second-term") return secondTermAvg ?? "-";
+    if (displayMode === "third-term") return thirdTermAvg ?? "-";
+    // Sequence mode: s1 to s6
+    if (displayMode.startsWith("s")) {
+      const seqAvg = subjects.reduce((sum, sub) => {
+        const val = sub[displayMode as keyof typeof sub];
+        return sum + (typeof val === "number" ? val : 0);
+      }, 0);
+      const count = subjects.reduce((cnt, sub) => (typeof sub[displayMode as keyof typeof sub] === "number" ? cnt + 1 : cnt), 0);
+      return count ? (seqAvg / count).toFixed(1) : "-";
+    }
+    return "-";
+  };
+
+const getDisplayPosition = () => {
+  if (displayMode === "annual") return position ?? "-";
+
+  if (
+    displayMode === "first-term" ||
+    displayMode === "second-term" ||
+    displayMode === "third-term"
+  ) {
+    return position ? `#${position}` : "-";
+  }
+
+  if (displayMode.startsWith("s")) {
+    return typeof sequencePosition === "number"
+      ? `#${sequencePosition}`
+      : "-";
+  }
+
+  return "-";
+};
+
 
   const sequencesToShow = () => {
     if (displayMode === "annual") return ["s1", "s2", "s3", "s4", "s5", "s6"];
@@ -236,9 +274,9 @@ const ReportCard: React.FC<ReportCardProps> = ({
             <div className="flex flex-col gap-1">
               <div className="bg-gray-200 border-2 border-gray-400 rounded-lg p-2 text-center shadow-sm">
                 <p className="text-[10px] font-semibold">Average</p>
-                <p className="text-[16px] font-bold text-black mb-2">{annualAverage ?? "-"}</p>
+                <p className="text-[16px] font-bold text-black mb-2">{getDisplayAverage()}</p>
                 <p className="text-[10px] font-semibold">Position</p>
-                <p className="text-[16px] font-bold text-black">{position ?? "-"}</p>
+                <p className="text-[16px] font-bold text-black">{getDisplayPosition()}</p>
               </div>
 
               <table className="w-full border border-gray-400 text-[9px] border-collapse mt-1">

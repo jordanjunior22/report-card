@@ -87,16 +87,19 @@ export default function transformReportCardData(
   let termSummary: any;
   let sequenceData: any;
   let isSequenceMode = false;
+let sequencePosition: number | undefined;
 
   if (displayMode === 'first-term') termSummary = academic_performance[0].term_summary;
   else if (displayMode === 'second-term') termSummary = academic_performance[1].term_summary;
   else if (displayMode === 'third-term') termSummary = academic_performance[2].term_summary;
-  else if (displayMode.startsWith('s')) {
-    isSequenceMode = true;
-    const { term, seq } = seqMap[displayMode];
-    termSummary = academic_performance[term].term_summary;
-    sequenceData = academic_performance[term].sequences[seq];
-  }
+else if (displayMode.startsWith('s')) {
+  isSequenceMode = true;
+  const { term, seq } = seqMap[displayMode];
+  termSummary = academic_performance[term].term_summary;
+  sequenceData = academic_performance[term].sequences[seq];
+  sequencePosition = sequenceData?.rank_in_class;
+}
+
 
   // --- TERM AVERAGES (always from annual_summary) ---
   const firstTermAvg = annual_summary.term_averages.term_1;
@@ -127,7 +130,8 @@ export default function transformReportCardData(
     subjects,
     displayMode,
     annualAverage: termSummary?.average_on_20 || annual_summary.annual_average,
-    position: `${termSummary?.rank_in_class || annual_summary.rank_in_class}${classSize > 0 ? ` / ${classSize}` : ''}`,
+position:
+  displayMode === 'annual' ? annual_summary.rank_in_class ? `${annual_summary.rank_in_class}` : undefined : termSummary?.rank_in_class? `${termSummary.rank_in_class}`: undefined,
     firstTermAvg,
     secondTermAvg,
     thirdTermAvg,
@@ -138,5 +142,7 @@ export default function transformReportCardData(
     behavior: termSummary?.disciplinary_record?.discipline_count > 0 ? 'Fair' : 'Good',
     disciplineRemarks: isSequenceMode ? generateSequenceRemarks(sequenceData.disciplinary_record) : generateAnnualRemarks(annual_summary.disciplinary_record),
     principalName: school.principal_name,
+    sequencePosition,
+
   };
 }
