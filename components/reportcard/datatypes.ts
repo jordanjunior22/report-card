@@ -107,6 +107,7 @@ export interface APIResponse {
                 term_3: number;
             };
             annual_average: number;
+            class_average?: number;
             rank_in_class: number;
             status: string;
             top_performers: Array<{

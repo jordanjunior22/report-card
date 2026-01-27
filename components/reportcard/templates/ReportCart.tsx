@@ -86,25 +86,25 @@ const ReportCard: React.FC<ReportCardProps> = ({
     return "-";
   };
 
-const getDisplayPosition = () => {
-  if (displayMode === "annual") return position ?? "-";
+  const getDisplayPosition = () => {
+    if (displayMode === "annual") return position ?? "-";
 
-  if (
-    displayMode === "first-term" ||
-    displayMode === "second-term" ||
-    displayMode === "third-term"
-  ) {
-    return position ? `#${position}` : "-";
-  }
+    if (
+      displayMode === "first-term" ||
+      displayMode === "second-term" ||
+      displayMode === "third-term"
+    ) {
+      return position ? `#${position}` : "-";
+    }
 
-  if (displayMode.startsWith("s")) {
-    return typeof sequencePosition === "number"
-      ? `#${sequencePosition}`
-      : "-";
-  }
+    if (displayMode.startsWith("s")) {
+      return typeof sequencePosition === "number"
+        ? `#${sequencePosition}`
+        : "-";
+    }
 
-  return "-";
-};
+    return "-";
+  };
 
 
   const sequencesToShow = () => {
@@ -182,7 +182,13 @@ const getDisplayPosition = () => {
 
           <div className="w-24 flex-shrink-0 flex items-start justify-center">
             <div className="w-20 h-24 overflow-hidden">
-              <img src={passportPhoto} alt="Student" className="w-full h-full object-cover" />
+              {passportPhoto && (
+                <img
+                  src={passportPhoto}
+                  alt="Student"
+                  className="w-full h-full object-cover"
+                />
+              )}
             </div>
           </div>
         </div>

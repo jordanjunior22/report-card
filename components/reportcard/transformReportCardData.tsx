@@ -87,18 +87,18 @@ export default function transformReportCardData(
   let termSummary: any;
   let sequenceData: any;
   let isSequenceMode = false;
-let sequencePosition: number | undefined;
+  let sequencePosition: number | undefined;
 
   if (displayMode === 'first-term') termSummary = academic_performance[0].term_summary;
   else if (displayMode === 'second-term') termSummary = academic_performance[1].term_summary;
   else if (displayMode === 'third-term') termSummary = academic_performance[2].term_summary;
-else if (displayMode.startsWith('s')) {
-  isSequenceMode = true;
-  const { term, seq } = seqMap[displayMode];
-  termSummary = academic_performance[term].term_summary;
-  sequenceData = academic_performance[term].sequences[seq];
-  sequencePosition = sequenceData?.rank_in_class;
-}
+  else if (displayMode.startsWith('s')) {
+    isSequenceMode = true;
+    const { term, seq } = seqMap[displayMode];
+    termSummary = academic_performance[term].term_summary;
+    sequenceData = academic_performance[term].sequences[seq];
+    sequencePosition = sequenceData?.rank_in_class;
+  }
 
 
   // --- TERM AVERAGES (always from annual_summary) ---
@@ -107,7 +107,15 @@ else if (displayMode.startsWith('s')) {
   const thirdTermAvg = annual_summary.term_averages.term_3;
 
   // --- CLASS AVERAGE ---
-  const classAverage = isSequenceMode ? sequenceData?.class_average : termSummary?.class_average;
+  let classAverage: number | undefined;
+
+  if (displayMode === 'annual') {
+    classAverage = annual_summary.class_average ?? undefined;
+  } else if (isSequenceMode) {
+    classAverage = sequenceData?.class_average;
+  } else {
+    classAverage = termSummary?.class_average;
+  }
 
   // --- COUNCIL DECISION ---
   const councilDecision = displayMode === 'annual' ? annual_summary.status : undefined;
@@ -130,8 +138,7 @@ else if (displayMode.startsWith('s')) {
     subjects,
     displayMode,
     annualAverage: termSummary?.average_on_20 || annual_summary.annual_average,
-position:
-  displayMode === 'annual' ? annual_summary.rank_in_class ? `${annual_summary.rank_in_class}` : undefined : termSummary?.rank_in_class? `${termSummary.rank_in_class}`: undefined,
+    position: displayMode === 'annual' ? annual_summary.rank_in_class ? `${annual_summary.rank_in_class}` : undefined : termSummary?.rank_in_class ? `${termSummary.rank_in_class}` : undefined,
     firstTermAvg,
     secondTermAvg,
     thirdTermAvg,
