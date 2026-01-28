@@ -272,3 +272,20 @@ export type StudentReport = {
     };
   };
 };
+
+export type ReportCardTemplate = "TemplateA" | "TemplateB" | "TemplateC";
+
+export interface ReportCardSettings {
+  schoolId: string;
+  classId: string;
+
+  academicYear: string;
+  template: ReportCardTemplate;
+
+  passingGrade: number;
+  classMaster?: string;
+
+  // future-proofing
+  createdAt?: string;
+  updatedAt?: string;
+}

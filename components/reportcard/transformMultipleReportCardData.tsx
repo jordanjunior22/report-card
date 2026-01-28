@@ -17,8 +17,12 @@ type ReportsApiResponse = {
 export function transformMultipleReportCards(
   apiResponse: ReportsApiResponse,
   displayMode: DisplayMode,
-  schoolConfig?: SchoolConfig
+  classMaster?: string
 ): ReportCardProps[] {
+  const schoolConfig: SchoolConfig | undefined = classMaster
+    ? { classMaster }
+    : undefined;
+
   return apiResponse.data.reports.map((report: StudentReport) =>
     transformReportCardData(
       { data: report } as APIResponse,
